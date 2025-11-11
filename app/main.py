@@ -7,7 +7,9 @@ def main():
         sys.stdout.write("$ ")
         command = input()
         if command == "exit 0":
-            break
+            exit(0)
+        if "echo" in command:
+            print(f"{command.removeprefix("echo ")}")
         else:
             print(f"{command}: command not found")
 
