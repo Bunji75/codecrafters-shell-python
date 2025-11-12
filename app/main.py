@@ -9,8 +9,7 @@ def checkPath(paths, command):
         if command in path:
             pathOfCommand = path
             return True, pathOfCommand
-        else:
-            return False, ''
+    return False, ''
 
 
 def main():
@@ -28,7 +27,8 @@ def main():
         if "type" in command:
             command = command.removeprefix("type ")
             foundInPath, pathOfCommand = checkPath(paths, command)
-            if command in commands and foundInPath:
+            print(f"{foundInPath}: found in path? {pathOfCommand}: path")
+            if foundInPath:
                 print(f"{command} is {pathOfCommand}")
                 continue
             elif command in commands:
