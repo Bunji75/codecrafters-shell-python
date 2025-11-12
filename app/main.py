@@ -27,7 +27,6 @@ def main():
         if "type" in command:
             command = command.removeprefix("type ")
             foundInPath, pathOfCommand = checkPath(paths, command)
-            print(f"{foundInPath}: found in path? {pathOfCommand}: path")
             if foundInPath:
                 print(f"{command} is {pathOfCommand}")
                 continue
