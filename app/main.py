@@ -6,9 +6,12 @@ commands = ["exit", "echo", "type", "path"]
 
 def checkPath(paths, command):
     for path in paths:
-        if command in os.listdir(path):
-            pathOfCommand = path + command
-            return True, pathOfCommand
+        try:
+            if command in os.listdir(path):
+                pathOfCommand = path + command
+                return True, pathOfCommand
+        except Exception as e:
+            raise e
     return False, ''
 
 
