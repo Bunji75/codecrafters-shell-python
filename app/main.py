@@ -23,7 +23,6 @@ def main():
         pathOfCommand = ''
 
         paths += os.getenv('PATH').split(pathseperator)
-
         if "type" in command:
             command = command.removeprefix("type ")
             foundInPath, pathOfCommand = checkPath(paths, command)
