@@ -1,5 +1,6 @@
 import sys
 import os
+import subprocess
 
 commands = ["exit", "echo", "type", "path"]
 
@@ -21,39 +22,50 @@ def main():
 
     while (1):
         sys.stdout.write("$ ")
-        command = input()
+        userCommand = input()
+        args = userCommand.split()
+        count = 0
+        for arg in args:
+            count = count + 1
+
         pathseperator = os.pathsep
         paths = []
         foundInPath = False
         pathOfCommand = ''
 
         paths += os.getenv('PATH').split(pathseperator)
+        foundInPath, commandPath = checkPath(paths, args[0])
 
-        if "type" in command:
-            command = command.removeprefix("type ")
-            foundInPath, pathOfCommand = checkPath(paths, command)
-            if command in commands:
-                print(f"{command} is a shell builtin")
+        if args[0] == "exit" and count > 1:
+            exit(0)
+
+        if args[0] == "type" and count > 1:
+            foundInPath, pathOfCommand = checkPath(paths, args[1])
+            if args[1] in commands:
+                print(f"{args[1]} is a shell builtin")
                 continue
             elif foundInPath:
-                print(f"{command} is {pathOfCommand}")
+                print(f"{args[1]} is {pathOfCommand}")
                 continue
             else:
-                print(f"{command.removeprefix("type ")}: not found")
+                print(f"{args[1]}: not found")
                 continue
 
-        if "echo " in command:
-            print(f"{command.removeprefix("echo ")}")
+        if "echo" in args[0]:
+            args.pop(0)
+            print(" ".join(args))
             continue
 
-        if command == "exit 0":
-            exit(0)
+        if foundInPath and args[0] not in commands:
+            subprocess.run(args)
+            continue
+
         else:
-            if command in commands:
-                print(f"{command} is a command but is incorrectly formatted")
+            if args[0] in commands:
+                print(f"{args[0]} is a command but is incorrectly formatted")
                 continue
             else:
-                print(f"{command}: command not found")
+                print(f"{args[0]}: command not found")
                 continue
 
 
