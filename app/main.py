@@ -9,7 +9,10 @@ def checkPath(paths, command):
         if os.path.exists(path):
             with os.scandir(path) as it:
                 for entry in it:
-                    if not entry.name.startswith('.') and entry.is_file() and entry.name in command:
+                    if (not entry.name.startswith('.') and
+                            entry.is_file() and
+                        command == entry.name and
+                            os.access(entry.path, os.X_OK)):
                         return True, entry.path
     return False, ''
 
@@ -29,11 +32,11 @@ def main():
         if "type" in command:
             command = command.removeprefix("type ")
             foundInPath, pathOfCommand = checkPath(paths, command)
-            if foundInPath:
-                print(f"{command} is {pathOfCommand}")
-                continue
-            elif command in commands:
+            if command in commands:
                 print(f"{command} is a shell builtin")
+                continue
+            elif foundInPath:
+                print(f"{command} is {pathOfCommand}")
                 continue
             else:
                 print(f"{command.removeprefix("type ")}: not found")
@@ -41,14 +44,17 @@ def main():
 
         if "echo " in command:
             print(f"{command.removeprefix("echo ")}")
+            continue
 
         if command == "exit 0":
             exit(0)
         else:
             if command in commands:
                 print(f"{command} is a command but is incorrectly formatted")
+                continue
             else:
                 print(f"{command}: command not found")
+                continue
 
 
 if __name__ == "__main__":
