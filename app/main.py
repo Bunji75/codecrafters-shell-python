@@ -6,12 +6,11 @@ commands = ["exit", "echo", "type", "path"]
 
 def checkPath(paths, command):
     for path in paths:
-        try:
-            if command in os.listdir(path):
-                pathOfCommand = path + command
-                return True, pathOfCommand
-        except Exception as e:
-            raise e
+        if os.path.exists(path):
+            with os.scandir(path) as it:
+                for entry in it:
+                    if not entry.name.startswith('.') and entry.is_file() and entry.name in command:
+                        return True, entry.path
     return False, ''
 
 
@@ -26,6 +25,7 @@ def main():
         pathOfCommand = ''
 
         paths += os.getenv('PATH').split(pathseperator)
+
         if "type" in command:
             command = command.removeprefix("type ")
             foundInPath, pathOfCommand = checkPath(paths, command)
