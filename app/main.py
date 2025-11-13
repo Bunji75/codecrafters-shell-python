@@ -2,7 +2,7 @@ import sys
 import os
 import subprocess
 
-commands = ["exit", "echo", "type", "path"]
+commands = ["exit", "echo", "type", "path", "pwd"]
 
 
 def checkPath(paths, command):
@@ -51,9 +51,13 @@ def main():
                 print(f"{args[1]}: not found")
                 continue
 
-        if "echo" in args[0]:
+        if args[0] == "echo":
             args.pop(0)
             print(" ".join(args))
+            continue
+
+        if args[0] == "pwd":
+            print(os.getcwd())
             continue
 
         if foundInPath and args[0] not in commands:
