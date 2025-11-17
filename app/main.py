@@ -61,6 +61,11 @@ def main():
             continue
 
         if args[0] == "cd":
+
+            if args[1] == '~':
+                os.chdir(os.environ['HOME'])
+                continue
+
             if os.access(args[1], os.F_OK):
                 os.chdir(args[1])
             else:
