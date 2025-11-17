@@ -2,10 +2,10 @@ import sys
 import os
 import subprocess
 
-commands = ["exit", "echo", "type", "path", "pwd"]
+commands = ["exit", "echo", "type", "path", "pwd", "cd"]
 
 
-def checkPath(paths, command):
+def checkPathForExe(paths, command):
     for path in paths:
         if os.path.exists(path):
             with os.scandir(path) as it:
@@ -34,13 +34,13 @@ def main():
         pathOfCommand = ''
 
         paths += os.getenv('PATH').split(pathseperator)
-        foundInPath, commandPath = checkPath(paths, args[0])
+        foundInPath, commandPath = checkPathForExe(paths, args[0])
 
         if args[0] == "exit" and count > 1:
             exit(0)
 
         if args[0] == "type" and count > 1:
-            foundInPath, pathOfCommand = checkPath(paths, args[1])
+            foundInPath, pathOfCommand = checkPathForExe(paths, args[1])
             if args[1] in commands:
                 print(f"{args[1]} is a shell builtin")
                 continue
@@ -58,6 +58,13 @@ def main():
 
         if args[0] == "pwd":
             print(os.getcwd())
+            continue
+
+        if args[0] == "cd":
+            if os.access(args[1], os.F_OK):
+                os.chdir(args[1])
+            else:
+                print(f"cd: {args[1]}: No such file or directory")
             continue
 
         if foundInPath and args[0] not in commands:
